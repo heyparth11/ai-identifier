@@ -40,6 +40,9 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 object1-detection = { module = "com.google.mlkit:object-detection", version.ref = "objectDetection" }
 text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "textRecognition" }
 image-labeling = { module = "com.google.mlkit:image-labeling", version = "17.0.9" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.8" }
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+
 
 
 [plugins]

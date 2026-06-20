@@ -16,6 +16,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.aiidentifier.presentation.camera.CameraViewModel
+import com.example.aiidentifier.presentation.navigation.MenuScreen
+import com.example.aiidentifier.presentation.navigation.Screen
+import com.example.aiidentifier.presentation.ocr.TextReaderScreen
 import com.example.aiidentifier.presentation.permission.CameraPermissionState
 import com.example.aiidentifier.presentation.permission.PermissionViewModel
 
@@ -44,22 +51,6 @@ fun CameraRoute(
                 )
             )
         }
-
-//    var permissionGranted by remember {
-//        mutableStateOf(
-//            checkSelfPermission(
-//                context,
-//                Manifest.permission.CAMERA
-//            ) == PackageManager.PERMISSION_GRANTED
-//        )
-//    }
-//
-//    val permissionLauncher =
-//        rememberLauncherForActivityResult(
-//            contract = ActivityResultContracts.RequestPermission()
-//        ) { granted ->
-//            permissionGranted = granted
-//        }
 
     LaunchedEffect(Unit) {
 
@@ -90,9 +81,37 @@ fun CameraRoute(
         }
 
         CameraPermissionState.Granted -> {
-            CameraXScreen(
+            val cameraViewModel: CameraViewModel = hiltViewModel()
+            val navController = rememberNavController()
+            
+            NavHost(
+                navController = navController,
+                startDestination = Screen.Menu.route,
                 modifier = modifier.fillMaxSize()
-            )
+            ) {
+                composable(Screen.Menu.route) {
+                    MenuScreen(
+                        onNavigateToTextReader = {
+                            navController.navigate(Screen.TextReader.route)
+                        },
+                        onNavigateToObjectIdentifier = {
+                            navController.navigate(Screen.ObjectIdentifier.route)
+                        }
+                    )
+                }
+                composable(Screen.TextReader.route) {
+                    TextReaderScreen(
+                        onBack = { navController.popBackStack() },
+                        viewModel = cameraViewModel
+                    )
+                }
+                composable(Screen.ObjectIdentifier.route) {
+                    CameraXScreen(
+                        onBack = { navController.popBackStack() },
+                        viewModel = cameraViewModel
+                    )
+                }
+            }
         }
 
         CameraPermissionState.Denied -> {
